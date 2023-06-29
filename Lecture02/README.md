@@ -100,7 +100,7 @@ T(N) = a * T(N/b) + O(N^d)
 
 基本思路: 将数据分为两份, 然后依次对其中两份进行排序, 排序后再将这两份合并起来。 这是一个递归的过程。
 
-伪代码:
+老师代码:
 
 ```java
 public static void mergeSort(int[] arr) {
@@ -267,7 +267,7 @@ public static void merge(int[] arr, int L, int M, int R) {
 比如, 对于数字 a, 先求他在右侧范围 [b] 下的小和, 然后再求它在右侧范围 [c] 下的小和, 最后求他在右侧范围 [d,e,f] 下的小和。 可以看出, 它的所有右侧范围不会有重叠的地方, 同时这些范围也包含了所有的右侧数。
 
 
-### 小和问题伪代码:
+### 小和问题老师代码:
 
 ```java
 
@@ -464,6 +464,8 @@ public static void merge(int[] arr, int L, int M, int R) {
 比如, 可能选取的划分数是在最边边的, 也可能是在 1/5 的位置, 也可能是在 1/3 的位置, 也可能是在 1/2 的位置。
 总之, 划分数在每个位置上都是等概率事件, 对所有的情况的概率和复杂度累加, 求数学期望, 得出的复杂度是 `O(N*log(N))`。 (具体证明过程略)
 
+
+老师代码:
 
 ```java
 public static void runQuickSort(int[] arr) {
