@@ -1,5 +1,7 @@
 ## 🍕 总结排序(时间复杂度, 空间复杂度, 稳定性)
 
+下面指的都是基于数组结构的排序。
+
 | 排序算法(典型)   | 时间复杂度(通常情况) | (额外)空间复杂度(通常情况) | 稳定性(通常情况) |
 |---------------|----------------------|----------------------------|----------------|
 | 选择排序         | $O(N^2)$             | $O(1)$                     | ❌不稳定          |
@@ -722,4 +724,441 @@ def copy_random_node_linked_list2(head):
     return copy_head
 ```
 
-###
+### 练习 - 两个单链表相交
+
+【题目】: 给定两个可能有环也可能无环的单链表, 头节点 head1 和 head2 。 请实现一个函数, 如果两个链表相交, 请返回相交的第一个节点。 如果不相交, 返回空
+【要求】: 如果两个链表长度之和为 N, 时间复杂度请达到 O(N), 额外空间复杂度请达到 O(1)。
+
+先判断一个链表是否有环
+
+#### 判断链表是否有环
+
+对于链表结构, 他只会有一个 next 节点。 所以:
+- 如果无环, 则一定会达到空
+- 如果有环, 则一定会遇到重复的节点
+
+
+【方法1】: 利用 Set 哈希表。 遍历链表, 每次遍历过程中, 先判断是否已存在该节点, 然后将该节点加到 Set 中。如果已存在, 则有环, 如果遍历到空, 则无环。
+
+【方法2(只给步骤)】: 无环时, 快指针直接到空。 有环时, 则:
+- 快指针慢指针都从头节点出发, 快指针一次走两步, 慢指针一次走一步。
+- 快指针和慢指针一定会相遇, 并且一定在两环内相遇, 即有限时间内相遇。
+- 相遇后, 快指针重新从头开始, 并且变为一次一步, 慢指针继续在原位置上一次一步
+- 再次相遇时, 所在的节点就是第一个相交节点(入环节点)
+
+【老师代码】:
+```java
+public static Node getLoopNode(Node head) {
+    if (head == null || head.next == null || head.next.next == null) {
+        return null;
+    }
+    Node n1 = head.next;  // 慢指针
+    Node n2 = head.next.next; // 快指针
+    while (n1 != n2) {
+        if (n2.next == null || n2.next.next == null) {
+            return null;
+        }
+        n2 = n2.next.next;
+        n1 = n1.next;
+    }
+    n2 = head;
+    while (n1 != n2) {
+        n1 = n1.next;
+        n2 = n2.next;
+    }
+    return n1;
+}
+```
+
+#### 解决问题
+
+【注意】: 虽然叫做两个单链表相交, 但实际上不会出现两条链表交叉后分开的情况。 因为单链表节点只有一个 next 节点。
+
+两条链表有三种情况:
+- 两个链表都 无环。 如果相交, 则他们的尾节点一定相同, 图像类似于 `Y`。  (不相交, 则相当于两个平行线 `| |`)
+- 一条链表有环, 一条链表无环。 不可能出现相交的情况。
+- 两个链表都 有环。 如果相交, 要么相交后一起走一段实际再入环, 图像类似于在 `Y` 下面再加个 `6`。 要么一条链表直接走到另一条链表的环中, 图形类似于立起来的正相关符号 `∝`。 (不相交, 图像类似于两个 `6`)。
+
+```
+〇　〇　　　　〇　　　　　　　〇　　　　　　　　〇　　　　　　　〇　　　　　　　　　　　　　　　　　　　　
+｜　｜　　　　　＼　　　　　／　　　　　　　　　　＼　　　　　／　　　　　　　　　　　　　　　　　　　　　
+〇　〇　　　　　　〇　　　〇　　　　　　　　　　　　〇　　　〇　　　　　　　　　　　　　　　　　　　　　　
+｜　｜　　　　　　　＼　／　　　　　　　　　　　　　　＼　／　　　　　　　　　　　　　　　　　　　　　　　
+〇　〇　　　　　　　　〇　　　　　　　　　　　　　　　　〇　　　　　　　　　　〇　　　　　　　　　　　〇　
+｜　｜　　　　　　　　｜　　　　　　　　　　　　　　　　｜　　　　　　　　　　　＼　　　　　　　　　／　　
+〇　〇　　　　　　　　〇　　　　　　　　　　　　　　　　〇　　　　　　　　　　　　〇　　　〇　　　〇　　　
+｜　｜　　　　　　　　｜　　　　　　　　　　　　　　　　｜　　　　　　　　　　　　　＼　／　＼　／　　　　
+〇　〇　　　　　　　　〇　　　　　　　　　　　　　　　　〇　　　　　　　　　　　　　　〇　　　〇　　　　　
+　　　　　　　　　　　　　　　　　　　　　　　　　　　／　＼　　　　　　　　　　　　　｜　　　｜　　　　　
+　　　　　　　　　　　　　　　　　　　　　　　　　　〇　　　〇　　　　　　　　　　　　〇　　　〇　　　　　
+　　　　　　　　　　　　　　　　　　　　　　　　　　　＼　／　　　　　　　　　　　　　　＼　／　　　　　　
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　〇　　　　　　　　　　　　　　　　〇　　　　　　　
+```
+
+```java
+
+public static  Node getIntersectNode (Node head1, Node head2) {
+    if (head1 == null || head2 == null) {
+        return null;
+    }
+    Node loop1 = getLoopNode(head1);
+    Node loop2 = getLoopNode(head2);
+    if (loop1 == null && loop2 == null) {
+        return noLoop(head1, head2);
+    }
+    if (loop1 != null && loop2 != null) {
+        return bothLoop(head1, loop1, head2, loop2);
+    }
+    return null;
+}
+
+public static Node noLoop(Node head1, Node head2) {
+    if (head1 == null || head2 == null) {
+        return null;
+    }
+    Node cur1 = head1;
+    Node cur2 = head2;
+    int n = 0;
+    while (cur1.next != null) {
+        n++;
+        cur1 = cur1.next;
+    }
+    while (cur2.next != null) {
+        n--;
+        cur2 = cur2.next;
+    }
+    if (cur1 != cur2) { // 尾节点不同, 一定不相交
+        return null;
+    }
+    cur1 = n > 0 ? head1 : head2 ; // 谁长, 谁的头变成 cur1
+    cur2 = cur1 == head1? : head2 : head1; // 谁短, 谁的头变成 cur2
+    n = Math.abs(n); // 两条链表的差值
+    // 先让长链表走完差值的长度
+    while (n != 0) {
+        n--;
+        cur1 = cur1.next;
+    }
+    // 然后两个链表一起走, 相遇时就是第一个交叉的节点
+    while (cur1 != cur2) {
+        cur1 = cur1.next;
+        cur2 = cur2.next;
+    }
+    return cur1;
+}
+
+public static Node bothLoop(Node head1, Node loop1, Node head2, Node loop2) {
+    Node cur1 = null;
+    Node cur2 = null;
+    if (loop1 == loop2) {
+        // 跟 noLoop 一样: return noLoop(head1, head2);
+        cur1 = head1;
+        cur2 = head2;
+        int n = 0;
+        while (cur1 != loop1) {
+            n++;
+            cur1 = cur1.next;
+        }
+        while (cur2 != loop2) {
+            n--;
+            cur2 = cur2.next;
+        }
+        cur1 = n > 0 ? head1 : head2;
+        cur2 = cur1 == head1 ? head2 : head1;
+        n = Math.abs(n);
+        while (n != 0) {
+            n--;
+            cur1 = cur1.next;
+        }
+        while (cur1 != cur2) {
+            cur1 = cur1.next;
+            cur2 = cur2.next;
+        }
+        return cur1;
+    } else {
+        cur1 = loop1.next;
+        while (cur1 != loop1) {
+            if (cur1 == loop2) {
+                return loop1; // 返回 loop1 或 loop2 都行, 这两个都叫做第一个相交的节点
+            }
+            cur1 = cur1.next;
+        }
+        // cur1 转完一圈后都没遇到 loop2, 说明两个环没有相交
+        return null;
+    }
+}
+```
+
+## 🍕 二叉树(节点形式)
+
+前面的二叉树, 是数组形式的, 这里的二叉树, 是节点形式的。 节点结构如下:
+```java
+class Node<V> {
+    V value;
+    Node left;
+    Node right;
+}
+```
+
+
+
+### 递归遍历
+
+递归序: 递归遍历二叉树时, 每个节点都有三个特殊时刻
+- 1️⃣ 初次进入当前节点
+- 2️⃣ 遍历完左子节点后返回当前节点
+- 3️⃣ 遍历完右子节点后返回当前节点
+
+```py
+def f(root):
+    if root is None:
+        return
+    # 1️⃣ 初次进入当前节点
+
+    f(root.left)
+    # 2️⃣ 遍历完左子节点后返回当前节点
+
+    f(root.right)
+    # 3️⃣ 遍历完右子节点后返回当前节点
+
+```
+
+在这三个特殊的时刻, 做对应的操作, 将会有不同的特点。 比如在这三个特殊的时刻打印当前节点值, 则对应:
+- 先序 pre-order: **头**左右, 对应 1️⃣
+- 中序 in-order: 左**头**右, 对应 2️⃣
+- 后序 post-order: 左右**头** 对应3️⃣
+
+
+
+### 非递归遍历
+
+任何递归都可以改成非递归。 最开始的程序都是不支持递归的, 之后的系统也是利用栈实现的递归。
+
+为什么这样能够实现后序遍历:
+一棵树分解为若干个左边界了 ////////
+而不同左树之间, 我们始终让左边的左树先处理
+在处理左边界的时候, 我们是从上到下入栈, 所以出栈时打印就是左头。
+而左边始终比右边先处理, 所以是左头右。
+也就是对于任何一棵子树, 都是让他先左再头, 然后在他的右树上, 也是先左再头。 所以最终是
+```
+　　　　　　左头右
+　　　　　左　　左头右
+　　　　左　　左　　左头右
+　　　左　　左　　左　　左头右
+　　左　　左　　左　　　　　...
+```
+也就是说没有"右树"的概念, 每次都是处理左树, 然后处理右边的左树, 右边的左树....
+
+老师代码参考:
+```java
+void preOrderUnRecur(Node head) {
+    print("pre-order: ") // 先序打印
+    if (head != null) {
+        // 不递归, 那就自己创建栈
+        Stack<Node> stack = new Stack<Node>();
+        stack.add(head);
+        while (!(stack.isEmpty())) {
+            // 每弹出元素时, 就处理(打印)
+            head = stack.pop();
+            print(head.value);
+            // 先压右, 再压左 (先进后出)
+            if (head.right != null)  stack.push(head.right);
+            if (head.left != null) stack.push(head.right);
+        }
+    }
+}
+
+void posOrderUnRecur(Node head) {
+    print("pos-order:"); // 后序打印
+    if (head != null) {
+        Stack<Node> s1 = new Stack<Node>();
+        Stack<Node> collect = new Stack<Node>();
+        s1.push(head);
+        while (!(s1.isEmpty())) {
+            head = s1.pop();
+            collect.push(head); // 先将要打印的元素放到收集栈
+            // 先压左, 再压右
+            if (head.left != null) {
+                s1.push(head.left);
+            }
+            if (head.right != null) {
+                s1.push(head.right);
+            }
+        }
+        // 收集时的顺序是头右左, 打印时的顺序就是左右头
+        while (!(collect.isEmpty())) {
+            print(collect.pop().value)
+        }
+
+    }
+}
+
+void inOrderUnRecur(Node head) {
+    print("in-order:"); // 中序打印
+    if (head != null) {
+        Stack<Node> stack = new Stack<Node>();
+        while (!(stack.isEmpty()) || head != null) {
+            if (head != null) {
+                // 不断将将左边界压栈
+                stack.push(head);
+                head = head.left;
+            } else {
+                // 弹出时打印, 同时将弹出的元素的右边界压栈
+                head = stack.pop();
+                print(head.value);
+                head = head.right
+            }
+        }
+    }
+}
+```
+
+### 二叉树层序(宽度)遍历
+
+【步骤】:
+- 利用队列, 初始时队列里是头节点。
+- 不断从队列中弹出一个节点
+    - 弹出节点时, 将该节点打印
+    - 同时将依次将该节点的左节点, 右节点加入队列中
+
+【老师代码参考】:
+
+```java
+void w(Node head) {
+    if (head == null) {
+        return null;
+    }
+    Queue<Node> queue = new LinkedList<>();
+    queue.add(head);
+    while (!(queue.isEmpty())) {
+        Node cur = queue.poll();
+        print(vur.value);
+        if (cur.left != null) {
+            queue.add(cur.left)
+        }
+        if (cur.right != null) {
+            queue.add(cur.right)
+        }
+    }
+}
+```
+
+【我的代码】:
+
+```py
+from queue import Queue
+def levelOrder(root):
+    if root is None:
+        return
+    queue = Queue()
+    queue.put(root)
+    while not queue.empty():
+        cur = queue.get()
+        print(cur.val)
+        if cur.left is not None:
+            queue.put(cur.left)
+        if cur.right is not None:
+            queue.put(cur.right)
+```
+
+### 二叉树最大宽度
+
+【做法1】:
+- 利用哈希表统计每个节点的层数。 即: 在将节点加入队列时记录该节点的层数, 新加节点的层数 = 当前节点层数+1。 因为新加节点是当前节点的子节点
+- 每次弹出节点时, 判断该节点是否在当前层, 不过不是, 说明已经进入下一层了, 此时可以统计上一层的节点数。
+
+【做法2】:
+做法1中的哈希表存储了很多多余信息。 当你进入下一层时, "上一层节点所对应的层数"这个信息就是不需要的了。
+因为我们统计的是最大层数, 而我们由是从第一层慢慢走到最后一层的, 所以我们真正需要的存储的只有当前层的节点数量和当前最大宽度。
+其他信息都是辅助作用, 都应该可以最小化他们的存储空间。
+【做法2具体实现】:
+利用三个变量代替哈希表。 这三个变量分别记录 当前层的最后一个节点 `curEnd`, 下一层的最后一个节点 `nextEnd`, 当前层的节点数量 `curNodes`。
+- 初始时, `curEnd` 为头节点; `nextEnd` 为空; `curNodes` 为 0, 因为头节点还未弹出, 当前层还未统计完。
+- 队列弹出一个节点时, 会将他的子节点加入到队列中。
+    - 弹出一个节点时, 判断该节点是否是 `curEnd` 节点。
+        - 如果不是, 说明该节点还在当前层, 将 `curNodes` +1
+        - 如果是, 说明当前层节点数统计统计完毕, 将 `curNodes` +1 后更新最大宽度 max。 然后 `curEnd` 修改为 `nextEnd`, 同时 `nextEnd` 为空。 因为下一次将会进入下一层了。
+    - 将子节点加入到队列时, 更新 `nextEnd` 为该子节点。 因为子节点是下一层的节点, 我们加入的顺序是从左到右的, 不断的更新 `nextEnd`, 下一层最后一个节点一定会是最后一个赋值给 `nextEnd` 的。
+
+
+#### 老师代码(做法1):
+
+```java
+int max_w(Node head) {
+    if (head == null) {
+        return 0;
+    }
+    Queue<Node> queue = new LinkedList<>();
+    queue.add(head);
+
+    HashMap<Node, Integer> levelMap = new HashMap<>(); // 存储每个节点所在的层数
+    levelMap.push(head, 1) // head 的层数是第一层
+    int curLevel = 1; // 当前所在层数为第一层
+    int curLevelNodes = 0; // 当前层已统计 0 个节点。 因为 head 节点还没有弹出呢
+    int max = Integer.MIN_VALUE; // 统计最大宽度
+
+    while (!(queue.isEmpty())) {
+        Node cur = queue.poll();
+        // 弹出一个元素后, 先判断该元素是否是当前所在层的元素
+        int curNodeLevel = levelMap.get(cur) // 利用 map 表获取该元素所在层数
+        if (curLevel == queue.poll()) {
+            curLevelNodes++; // 当前元素在当前层, 则当前层节点数+1
+        } else {
+            // 当前元素不在当前层了, 说明进入下一层了
+            max = Math.max(max, curLevelNodes) // 此时可以统计上一层的节点数量之和
+            curLevel++; // 更新当前层
+            curLevelNodes = 1; // 因为更新后的当前层的第一个元素已经在前面弹出了, 所以当前层的节点数是 1
+        }
+
+        // 前面代码能成立的条件是, 通过 map 同理了每个节点的层数
+        if (cur.left != null) {
+            // 在将新节点加到队列中时, 存储该节点的对应层数; 该节点的层数等于其父节点的层数+1
+            levelMap.put(cur.left, curNodeLevel+1);
+            queue.add(cur.left);
+        }
+        if (cur.right != null) {
+            // 添加右子节点时也是一样的操作。
+            levelMap.put(cur.right, curNodeLevel+1);
+            queue.add(cur.right);
+        }
+    }
+    return max;
+}
+
+```
+
+#### 我的代码(做法2)
+
+```py
+def binary_tree_max_width(root):
+    max_w = 0
+    if root is None:
+        return max_w
+
+    queue = Queue()  # 利用队列实现层级遍历
+    queue.put(root)  # 队列初始值为根节点。 后续通过判断队列是否为空来退出循环
+    cur_end = root  # 当前层的最后节点
+    next_end = None  # 下一层的最后节点
+    cur_w = 0 # 当前层节点数量
+
+    while not queue.empty(): # 队列为空, 则遍历完毕
+        # 每次都弹出一个元素
+        cur = queue.get()
+        cur_w += 1
+        # 弹出一个元素的同时, 按从左到右的次序依次将子节点放入队列中
+        if cur.left is not None:
+            next_end = cur.left # 下一层的最后节点在加入子节点的过程中产出, 谁留到最后谁就是下层最后节点
+            queue.put(cur.left)
+        if cur.right is not None:
+            next_end = cur.right
+            queue.put(cur.right)
+        # 判断弹出的元素是否是当前层最后节点
+        if cur is cur_end:
+            # 如果是, 则整理当前层信息
+            max_w = max(max_w, cur_w)
+            # 同时准备下一层信息
+            cur_w = 0
+            cur_end = next_end
+            next_end = None
+
+    return max_w
+```
