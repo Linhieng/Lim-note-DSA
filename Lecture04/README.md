@@ -782,8 +782,8 @@ public static Node getLoopNode(Node head) {
 ```
 〇　　　　　　　〇　　　　　　　　　　　　　　　　　　　　
 　＼　　　　　／　　　　　　　　　　　　　　　　　　　　　
-　　〇　　　〇　　　　　　　　　　　　　　　　　　　　　　
-　　　＼　／　　　　　　　　环的方向不重要，谁交谁都一样　
+　　〇　　　〇　　　　　　　环的方向不重要，谁交谁都一样　
+　　　＼　／　　　　　　　　　　　此时环点就是交点　　　　
 　　　　〇　　　　　　　　　　〇　　　　　　　　　　　〇　
 　　　　｜　　　　　　　　　　　＼　　　　　　　　　／　　
 　　　　〇　　　　　　　　　　　　〇　　　〇　　　〇　　　
@@ -806,8 +806,10 @@ public static Node getLoopNode(Node head) {
 - 成环点不同, 则两条链表可能相交也可能不相交。
     - 如果相交, 则说明有一条链表先成环, 然后另一条链表直接插入到环圈上的一个节点, 换句话说, 插入的这个节点就是这条链表的成环点, 同时也是他们的交点。
     - 如果不相交, 则一定无法再环圈上找到另一条链表的成环点。
-    - 故, 只需要在一条链表的环圈上绕一圈, 看看是否有另一条链表的成环点, 如果有, 该成环点就是交点。 如果饶了一圈还没找到, 说明不相交。
+    - 故, 只需要在一条链表的环圈上绕一圈, 看看是否有另一条链表的成环点, 如果有, 该环点就是交点。 如果饶了一圈还没找到, 说明不相交。
 
+
+【老师代码】:
 ```java
 
 public static  Node getIntersectNode (Node head1, Node head2) {
@@ -912,8 +914,6 @@ class Node<V> {
 }
 ```
 
-
-
 ### 递归遍历
 
 递归序: 递归遍历二叉树时, 每个节点都有三个特殊时刻
@@ -932,26 +932,108 @@ def f(root):
 
     f(root.right)
     # 3️⃣ 遍历完右子节点后返回当前节点
-
 ```
 
-在这三个特殊的时刻, 做对应的操作, 将会有不同的特点。 比如在这三个特殊的时刻打印当前节点值, 则对应:
-- 先序 pre-order: **头**左右, 对应 1️⃣
-- 中序 in-order: 左**头**右, 对应 2️⃣
-- 后序 post-order: 左右**头** 对应3️⃣
-
+在这三个特殊的时刻, 做对应的操作, 将会有不同的特点。 比如在这三个特殊的时刻打印当前节点值:
+- 1️⃣ 时刻打印节点值为 **先序**遍历(pre-order): **头**左右。
+- 2️⃣ 时刻打印节点值为 **中序**遍历(in-order): 左**头**右。
+- 3️⃣ 时刻打印节点值为 **后序**遍历(post-order): 左右**头**。
 
 
 ### 非递归遍历
 
-任何递归都可以改成非递归。 最开始的程序都是不支持递归的, 之后的系统也是利用栈实现的递归。
+最开始的程序都是不支持递归的, 之后的系统也是利用栈实现的递归, 所以任何递归都可以改成非递归, 只不过是自己管理栈的问题罢了。
 
-为什么这样能够实现后序遍历:
-一棵树分解为若干个左边界了 ////////
-而不同左树之间, 我们始终让左边的左树先处理
-在处理左边界的时候, 我们是从上到下入栈, 所以出栈时打印就是左头。
-而左边始终比右边先处理, 所以是左头右。
-也就是对于任何一棵子树, 都是让他先左再头, 然后在他的右树上, 也是先左再头。 所以最终是
+为什么非递归遍历是重点:
+- 递归遍历太简单了。
+- 非递归遍历能够让你更熟悉二叉树结构
+- 非递归可以节省空间, 因为系统栈管理的是函数, 自己创建的栈可以自定指定元素大小和类型。
+- 非递归执行效率更高, 递归涉及函数调用和上下文切换的开销, 而非递归直接通过循环实现。
+
+【关键点】: 节点形式的二叉树, 访问任意一个节点, 都 **必须通过头节点** 访问。 牢记这一点可以更好的理解下面非递归的写法。
+
+#### 先序(pre-order)
+
+对每一颗子树, 都是先打印 "头", 然后打印左, 再打印右。
+重点在于, 打印 "左" 时, 这个 左子节点 同时也是 头节点。 所以打印完这个 左子节点 后还要继续往左边打印。
+
+当我们打印头后, 头节点就只剩下 "帮助我们找到左右两个子节点" 这一个使命, 如果完成了这个使命, 那么头节点就没用了。
+这个时候我们可以不存储头节点的信息。 (这就是和递归不同的地方, 递归实现中, 头节点永远位于栈的最底端, 而自己实现时, 完全可以将头节点踢出去)。
+
+故非递归实现前序遍历的本质就是: 用一个 "头", 换两个 "子"。
+- 头出栈, 然后将两个子节点入栈。 头先出栈, 免得占用空间。 同时头出栈后直接打印。
+- 先压右节点, 再压左节点。 因为栈的结构是先进后出, 我们是在出栈时打印, 所以要后压左节点, 才能实现先打印左节点
+
+
+```py
+def pre_order_binary_tree(root, print_arr):
+    stack = [root]
+    while len(stack) != 0:
+        head = stack.pop() # 头节点的使命(打印, 找到子节点)在一个循环中就能完成, 所以不需要继续保存头节点
+        print_arr.append(head.val)
+        # 我们是在出栈时打印, 所以先打印的东西要后压栈, 后打印的东西要先压栈
+        stack.append(head.right) if head.right is not None else None
+        stack.append(head.left) if head.left is not None else None
+```
+
+#### 后序(post-order)
+
+后序遍历, 左右**头**。 他其实是先序打印的变体。
+先序打印中, 头出栈时就打印, 然后先右后左, 结果就是 头左右。
+将先序打印改成这样: 头出栈时打印, 然后压栈顺序变为先左后右, 那结果就会变成 头右左。
+我们会发现这个顺序刚好和 后序遍历的顺序相反, 所以只要我们将 "打印" 这个操作换成 "入另外一个栈",
+然后等待结束后, 再将另外一个栈中的内容取出, 就实现了后序遍历。
+
+```py
+def pos_order_binary_tree(root, print_arr):
+    stack = [root]
+    collect = [] # 收集要要打印的元素
+    while len(stack) != 0:
+        head = stack.pop()
+        collect.append(head) # 将打印换成入栈
+        # 压栈顺序变为先左后右
+        stack.append(head.left) if head.left is not None else None
+        stack.append(head.right) if head.right is not None else None
+    # 前面和先序遍历一样, 然后将内容从栈中
+    while len(collect) != 0:
+        print_arr.append(collect.pop().val)
+```
+
+#### 中序(in-order)
+
+中序遍历中, 头节点的使命依旧有两个: 打印 + 找到两个子节点。
+但因为中序遍历是 左**头**右, 而我们选择在出栈时打印, 所以在没有打印"左"之前, 头必须待在栈中。
+直到"左"出栈后, 头才可以出栈, 同时将"右"入栈(给出右的位置)。
+
+所以中序遍历算法如下:
+- 将左子节点压栈 ("头" 给出 "左" 的位置)
+- "左"为空时, "头" 出栈, 同时将 "右" 压栈 (给出 "右" 位置)。
+
+如果还不理解, 自己画一下栈的变化图。
+
+```py
+def in_order_binary_tree(root, print_arr):
+    stack = []
+    p = root
+    # 栈空时, 表示根节点的左部都完成了, 此时 p 为根节点的右子节点。 所以还不可以出栈
+    while len(stack) != 0 or p is not None:
+        if p is not None:
+            # 不断将左边界压栈
+            stack.append(p)
+            p = p.left
+        else:
+            # 左边界压完了, "头" 的使命也就结束了, 于是 "头" 出栈
+            p = stack.pop()
+            print_arr.append(p.val)
+            # 同时 "头" 给出右子节点的位置
+            p = p.right
+```
+
+【为什么这样能够实现后序遍历】:
+一棵树可以分解为若干个左树, 不同左树之间, 我们先处理左边的左树。
+在处理左树时, 我们是先自上到下将所有左子节点入栈, 然后再出栈打印, 所以打印的顺序是先左后头。
+又因为左边的左树始终比右边的左树先处理, 而处理完左树的同时也会打印头, 所以最终是左头右的顺序。
+对于任何一棵子树, 都是让他先左再头, 然后在他的右树上, 继续先左再头。 所以最终是
 ```
 　　　　　　左头右
 　　　　　左　　左头右
@@ -959,103 +1041,14 @@ def f(root):
 　　　左　　左　　左　　左头右
 　　左　　左　　左　　　　　...
 ```
-也就是说没有"右树"的概念, 每次都是处理左树, 然后处理右边的左树, 右边的左树....
 
-老师代码参考:
-```java
-void preOrderUnRecur(Node head) {
-    print("pre-order: ") // 先序打印
-    if (head != null) {
-        // 不递归, 那就自己创建栈
-        Stack<Node> stack = new Stack<Node>();
-        stack.add(head);
-        while (!(stack.isEmpty())) {
-            // 每弹出元素时, 就处理(打印)
-            head = stack.pop();
-            print(head.value);
-            // 先压右, 再压左 (先进后出)
-            if (head.right != null)  stack.push(head.right);
-            if (head.left != null) stack.push(head.right);
-        }
-    }
-}
-
-void posOrderUnRecur(Node head) {
-    print("pos-order:"); // 后序打印
-    if (head != null) {
-        Stack<Node> s1 = new Stack<Node>();
-        Stack<Node> collect = new Stack<Node>();
-        s1.push(head);
-        while (!(s1.isEmpty())) {
-            head = s1.pop();
-            collect.push(head); // 先将要打印的元素放到收集栈
-            // 先压左, 再压右
-            if (head.left != null) {
-                s1.push(head.left);
-            }
-            if (head.right != null) {
-                s1.push(head.right);
-            }
-        }
-        // 收集时的顺序是头右左, 打印时的顺序就是左右头
-        while (!(collect.isEmpty())) {
-            print(collect.pop().value)
-        }
-
-    }
-}
-
-void inOrderUnRecur(Node head) {
-    print("in-order:"); // 中序打印
-    if (head != null) {
-        Stack<Node> stack = new Stack<Node>();
-        while (!(stack.isEmpty()) || head != null) {
-            if (head != null) {
-                // 不断将将左边界压栈
-                stack.push(head);
-                head = head.left;
-            } else {
-                // 弹出时打印, 同时将弹出的元素的右边界压栈
-                head = stack.pop();
-                print(head.value);
-                head = head.right
-            }
-        }
-    }
-}
-```
-
-### 二叉树层序(宽度)遍历
+### 层序(宽度)遍历
 
 【步骤】:
 - 利用队列, 初始时队列里是头节点。
 - 不断从队列中弹出一个节点
-    - 弹出节点时, 将该节点打印
-    - 同时将依次将该节点的左节点, 右节点加入队列中
-
-【老师代码参考】:
-
-```java
-void w(Node head) {
-    if (head == null) {
-        return null;
-    }
-    Queue<Node> queue = new LinkedList<>();
-    queue.add(head);
-    while (!(queue.isEmpty())) {
-        Node cur = queue.poll();
-        print(vur.value);
-        if (cur.left != null) {
-            queue.add(cur.left)
-        }
-        if (cur.right != null) {
-            queue.add(cur.right)
-        }
-    }
-}
-```
-
-【我的代码】:
+    - 弹出节点时, 处理将该节点(打印)
+    - 同时将该节点的左节点, 右节点按序加入队列中
 
 ```py
 from queue import Queue
@@ -1093,56 +1086,45 @@ def levelOrder(root):
     - 将子节点加入到队列时, 更新 `nextEnd` 为该子节点。 因为子节点是下一层的节点, 我们加入的顺序是从左到右的, 不断的更新 `nextEnd`, 下一层最后一个节点一定会是最后一个赋值给 `nextEnd` 的。
 
 
-#### 老师代码(做法1):
-
-```java
-int max_w(Node head) {
-    if (head == null) {
-        return 0;
-    }
-    Queue<Node> queue = new LinkedList<>();
-    queue.add(head);
-
-    HashMap<Node, Integer> levelMap = new HashMap<>(); // 存储每个节点所在的层数
-    levelMap.push(head, 1) // head 的层数是第一层
-    int curLevel = 1; // 当前所在层数为第一层
-    int curLevelNodes = 0; // 当前层已统计 0 个节点。 因为 head 节点还没有弹出呢
-    int max = Integer.MIN_VALUE; // 统计最大宽度
-
-    while (!(queue.isEmpty())) {
-        Node cur = queue.poll();
-        // 弹出一个元素后, 先判断该元素是否是当前所在层的元素
-        int curNodeLevel = levelMap.get(cur) // 利用 map 表获取该元素所在层数
-        if (curLevel == queue.poll()) {
-            curLevelNodes++; // 当前元素在当前层, 则当前层节点数+1
-        } else {
-            // 当前元素不在当前层了, 说明进入下一层了
-            max = Math.max(max, curLevelNodes) // 此时可以统计上一层的节点数量之和
-            curLevel++; // 更新当前层
-            curLevelNodes = 1; // 因为更新后的当前层的第一个元素已经在前面弹出了, 所以当前层的节点数是 1
-        }
-
-        // 前面代码能成立的条件是, 通过 map 同理了每个节点的层数
-        if (cur.left != null) {
-            // 在将新节点加到队列中时, 存储该节点的对应层数; 该节点的层数等于其父节点的层数+1
-            levelMap.put(cur.left, curNodeLevel+1);
-            queue.add(cur.left);
-        }
-        if (cur.right != null) {
-            // 添加右子节点时也是一样的操作。
-            levelMap.put(cur.right, curNodeLevel+1);
-            queue.add(cur.right);
-        }
-    }
-    return max;
-}
-
-```
-
-#### 我的代码(做法2)
-
+【代码】:
 ```py
-def binary_tree_max_width(root):
+# 做法1
+def binary_tree_max_width1(root):
+    max_w = 0 # 最大宽度
+    if root is None:
+        return max_w
+    queue = Queue()
+    queue.put(root)
+
+    level_map = {} # 存储每个节点所在的层数
+    level_map[root] = 1 # root 的层数是第一层
+    store_level = 1 # 记录弹出元素前位于第几层
+    store_w = 0 # 统计当前层宽度。 弹出元素时加 1
+    while not queue.empty():
+        cur = queue.get()
+        if store_level == level_map[cur]:
+            # 还在同一层, 宽度(节点数)加1
+            store_w += 1
+        else:
+            # 弹出元素层级和记录的层级不同, 说明当前循环已经进去下一层
+            store_level += 1
+            max_w = max(store_w, max_w)
+            store_w = 1 # 新一层的第一个元素已经弹出
+
+        # 前面代码能成立的条件是, 通过 map 同理了每个节点的层数
+        if cur.left is not None:
+            # 在将新节点加到队列中时, 存储该节点的对应层数; 该节点的层数等于其父节点的层数+1
+            level_map[cur.left] = level_map[cur] + 1
+            queue.put(cur.left)
+        if cur.right is not None:
+            level_map[cur.right] = level_map[cur] + 1
+            queue.put(cur.right)
+    # 遍历完最后一层后, 再"结算"一下。
+    max_w = max(store_w, max_w)
+    return max_w
+
+# 做法2
+def binary_tree_max_width2(root):
     max_w = 0
     if root is None:
         return max_w
