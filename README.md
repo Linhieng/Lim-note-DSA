@@ -6,10 +6,48 @@
 
 ## 学习的知识
 
+- 时间复杂度, (额外)空间复杂度
+- 位运算
 - 对数器
-- 排序算法
-- 链表
-- 二叉树
+- 递归(recursion), master 公式
+- 二分法, partition
+- 哈希表, Map, Set
+- 有序表, Map, Set
+
+## 需要不断练习的内容
+
+- 排序算法(SortAlgorithm)
+    - 选择排序(SelectSort)
+    - 冒泡排序(BubbleSort)
+    - 插入排序(InsertSort)
+    - 归并排序(MergeSort)
+        - 小和问题
+    - (随机)快速排序(QuickSort)
+        - 二项分布(two-way partition)
+        - 三项分布(three-way partition)
+    - 堆排序(HeapSort)
+        - heapInsert
+        - heapify
+    - 桶排序
+        - 计数排序(CountSort)
+        - 基数排序(RadixSort)
+- 链表(LinkedList)
+    - 反转链表(reverse)
+    - 链表回文(palindrome)
+    - 链表 partition
+    - 链表随机复制
+- 二叉树(BinaryTree)
+    - 递归遍历, 非递归遍历。 (前序、中序、后序和层序)
+    - 最大宽度
+    - 搜索二叉树 BST(BinaryTreeSearch)
+    - 完全二叉树, 满二叉树
+    - 平衡二叉树
+    - 递归套路解决二叉树 DP(DynamicProgramming)
+    - 最近公共祖先节点
+    - 后继节点
+    - (递归, 非递归)序列化和反序列化(Serialize & Deserialize)
+- 图(Graph)
+    -
 
 ## 我的想法
 
