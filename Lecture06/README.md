@@ -11,7 +11,7 @@
 - 无向图(Undirected Graph)
 
 图常见的两种表示方式:
-- 邻接表(Adjacency List): 用链表或数组表示。对于每个顶点，我们都维护一个与之相邻的顶点列表。
+- 邻接表(Adjacency List): 用链表或数组表示。
 - 邻接矩阵(Adjacency Matrix): 用一个二维数组来表示图中顶点之间的连接关系。 假设图有 $N$ 个顶点, 则邻接矩阵大小为 $N×N$
 
 图的其他常见概念:
@@ -167,7 +167,7 @@ List<Node> sortedTopology(Graph graph) {
 
 ### 最小生成树 MST(Minimum Spanning Tree)
 
-MST: 指在一个连通无向图中找到一棵包含所有顶点并且边的权值之和最小的树。 在最小生成树中，任意两个顶点之间有且仅有一条路径。
+MST: 指在一个连通无向图中找到一棵包含所有顶点并且边的权值之和最小的树。 在最小生成树中, 任意两个顶点之间有且仅
 
 【注意】: 最小生成数只适用于连通无向图, 对于有向图, 可以参考最小生成森林
 
@@ -318,6 +318,8 @@ Set<Edge> primMST(Graph graph) {
 - 重复上面的过程, 直到 `wait_table` 中没有路径。
 - 对于 `wait_table`, 每次只会选取一条最短路径, 并且 `wait_table` 是一个一个加入进去的, 所以可以利用堆结构实现  `wait_table`。
 - 上面还需要注意的一个点就是, 如何找到每个节点的邻接点 nexts, 还有节点与邻接点之间的距离。
+- 如果想要继续优化, 则需要自己手写堆。 因为前面的实现中, 是直接将新更新的距离添加到堆中的, 旧的值同时也还保留着, 虽然它不会影响结果, 但最后还是会重复再处理一次。 而自己手写堆时, 就能够再优化一下下。
+
 
 【算法核心】: 每次都选出一条最短路径, 然后利用路径的 to 节点的 nexts 开拓出到达其他节点的更短路径。
 
@@ -389,5 +391,111 @@ Node getMinDistanceAndUnselectedNode(
         }
     }
     return minNode;
+}
+```
+
+【改进后的diikstra算法】
+
+```java
+// 从head出发, 所有head能到达的节点, 生成到达每个节点的最小路径记录并返回
+HashMap<Node, Integer> dijkstra2(Node head, int size) {
+    NodeHeap nodeHeap = new NodeHeap(size);
+    nodeHeap.addOrUpdateOrIgnore(head, 0);
+    while (!nodeHeap.isEmpty()) {
+        NodeRecord record = nodeHeap.pop();
+        Node cur = record.node;
+        int distance = record.distance;
+        for (Edge edge : cur.edges) {
+            nodeHeap.addOrUpdateOrIgnore(edge.to, edge.weight + distance);
+        }
+        result.put(cur, distance)
+    }
+    return result;
+}
+class nodeRecord { // 起始点到达 node 节点的距离 distance
+    Node node;
+    int distance;
+}
+class NodeHeap{
+    Node[] nodes;
+    HashMap<Node, Integer> heapIndexMap;
+    HashMap<Node, Integer> distanceMap;
+    int size;
+
+    NodeHeap() {
+        nodes = new Node[size];
+        heapIndexMap = new HashMap<>();
+        distanceMap = new HashMap<>();
+        size = 0;
+    }
+
+    boolean isEmpty() {
+        return size == 0;
+    }
+
+    void addOrUpdateOrIgnore(Node node, int distance) {
+        if (inHeap(node)) { // 在堆上, 则更新堆
+            distanceMap.put(node, Math.min(distanceMap.get(node), distance));
+            insertHeapify(node, heapIndexMap.get(node));
+        }
+        if (!isEntered(node)) { // 没进过堆, 则直接添加
+            nodes[size] = node;
+            heapIndexMap.put(node, size);
+            distanceMap.put(node, distance);
+            insertHeapify(node, size++);
+        }
+        // 进来过不在堆上, 说明是锁定的距离, 所以是 ignore
+    }
+    NodeRecord pop() {
+        NodeRecord nodeRecord = new NodeRecord(nodes[0], distanceMap.get(nodes[0]));
+        swap(0, size - 1); // 将尾节点提到头节点
+        heapIndexMap.put(nodes[size - 1], -1); // 标记值为 -1, 表示这个节点进来过, 但不在堆上了
+        distanceMap.remove(nodes[size - 1]); // 将弹出节点从堆上删除
+        nodes[size - 1] = null;
+        // cpp 这里要自己释放空间
+        heapify(0, --size); // 更新堆
+        return nodeRecord;
+    }
+    void insertHeapify(Node node, int index) { // 向上调整
+        while (distanceMap.get(nodes[index]) < distanceMap.get(nodes[(index-1) / 2])) {
+            // 比父节点小, 则继续向上调整
+            swap(index, (index - 1) / 2);
+            index = (index - 1) / 2
+        }
+    }
+    void heapify(int index, int size) { // 向下调整
+        int left = index * 2 + 1;
+        while (left < size) {
+            // 最小子节点
+            int smallest = left +  1 < size && distanceMap.get(nodes[left+1]) < distanceMap.get(nodes[left])
+                ? left + 1 : left;
+            // 与最小子节点比较
+            smallest = distanceMap.get(nodes[smallest]) < distanceMap.get(nodes[index])
+                ? smallest : index;
+            if (smallest == index) {
+                break;
+            }
+            // 如果当前节点值大于最小子节点, 则继续向下调整
+            swap(smallest, index);
+            index = smallest;
+            left = index * 2 + 1;
+
+        }
+    }
+    boolean isEntered(Node node) { // 查看 node 是否进来过堆, 即使进来过, 但不在了也算是进来过
+        return heapIndexMap.containsKey(node);
+    }
+    boolean inHeap(Node node) {
+        // 首先要进来过, 其实要值不为 -1, 即没出去过
+        return isEntered(node) && heapIndexMap.get(node) != -1;
+    }
+    void swap(int a, int b) {
+        // 交换时, 两个数据结构都要交换
+        heapIndexMap.put(nodes[a], b);
+        heapIndexMap.put(nodes[b], a);
+        Node tmp = nodes[a];
+        nodes[a] = nodes[b];
+        nodes[b] = tmp;
+    }
 }
 ```

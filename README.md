@@ -47,7 +47,22 @@
     - 后继节点
     - (递归, 非递归)序列化和反序列化(Serialize & Deserialize)
 - 图(Graph)
-    -
+    - BFS 广度优先遍历
+    - DFS 深度优先遍历
+    - 拓扑排序
+    - MST 最小生成树
+        - Kruskal
+        - Prim
+    - Dijkstra 最短路径
+- 贪心算法
+    - 安排会议
+    - 最小字典序
+    - 哈夫曼编码
+    - 项目利润
+- 暴力递归 (Violent recursion)
+    - 汉诺塔问题
+    - 打印字符串的全部子序列, 全部排列
+    - N 皇后
 
 ## 我的想法
 
