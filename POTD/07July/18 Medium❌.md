@@ -9,36 +9,48 @@
 
 想了 90 分钟, 想不出来, 于是打开 Hint, 结果就两个字 —— "Use LCS."。我......
 
-搞半天, 我说为什么题意很奇怪, 题目里只提到了两个相同子序列的起始下标不能相同, 但是我测试时却发现对于字符串 `xxax` 最长子序列居然不是 3。
-因为 `xax` 中后两个字符下标相同。
-
-行了, 这也不算借口, 反正当我发现空间复杂度和时间复杂度都很高时, 我以为是暴力, 但是我也不会暴力。
-想过好几个点子, 都涉及到利用数组来存储内容, 比如本来的想法就是, 利用数组, 遍历字符串, 从右到左, 存储以该字符串为首个下标时最长序列长度是多少。
-然后再从左到右遍历, 能够怎么样怎么样, 哎呀, 不想写了, 思路很乱, 只知道应该可以这样。
-但没想到这道题就是一道动态规划题, 而且看起来还特别经典!
-
-虽然我喜欢想想想, 但是对于这种, 我还是先学习吧, 毕竟我不是天才。 我说怎么这道题目通过率几乎百分之 50 呢！
-
-具体笔记啥的也不想写了, 算法视频还没看完呢!
-
-感觉 ChatGPT 说的很清楚了, 首先题意可以提取出:
-要找到一个在给定字符串中重复出现两次的最长重复子序列, 那么这个子序列必须满足以下条件：
-- 子序列 A 和 B 在原始字符串中的索引位置不能重叠。
-- 子序列 A 和 B 的内容必须相同。
-
 二维数组 dp 的含义为: `dp[i][j]` 表示 `str[0...i-1]` 和 `str[0...j-1]` 中最长重复子序列的长度。
 递归关系为:
 - 如果 `str[i-1] == str[j-1]` 且 `i != j`, 则 `dp[i][j] = dp[i-1][j-1] + 1`, 表示当前字符可以作为最长重复子序列的一部分。
-- 否则, `dp[i][j] = max(dp[i-1][j], dp[i][j-1])`, 表示当前字符无法作为最长重复子序列的一部分, 需要继续向前搜索。
-
-其实现在想想, 目前我做算法题, 还总是喜欢按照自己的想法来, 暂时不会往已有的模版上靠。
-但是当我做的题目越来越多时, 肯定会使用越来越多的模版, 不知道那个时候, 我是否还能有自己的想法。
-但应该不会吧, 这玩意就像随机的一样, 想法往往是突然就蹦出来的, 做的越多, 案例来说想法应该也会越多。
-不至于变成行尸走肉, 或者做题机器吧......
+- 否则, `dp[i][j] = max(dp[i-1][j], dp[i][j-1])`, 表示当前字符无法作为最长重复子序列的一部分，长度无法继续变大。
 
 ### Python3 代码
 
-【ChatGPT】:
+【评论区 - 递归 ❌】:
+```py
+class Solution:
+    def f(self, i, j, A, B):
+        if i < 0 or j < 0:
+            return 0
+        if A[i] == B[j] and i != j:
+            return 1 + self.f(i-1, j-1, A, B)
+        return max( self.f(i-1, j, A, B), self.f(i, j-1, A, B) )
+
+	def LongestRepeatingSubsequence(self, str):
+	    n = len(str)
+	    return self.f(n-1, n-1, str, str)
+```
+
+【评论区 - 递归填表】:
+```py
+class Solution:
+    def f(self, i, j, A, B, dp):
+        if i < 0 or j < 0:
+            return 0
+        if dp[i][j] != -1:
+            return dp[i][j]
+        if A[i] == B[j] and i != j:
+            return 1 + self.f(i-1, j-1, A, B, dp)
+
+        dp[i][j] = max( self.f(i-1, j, A, B, dp), self.f(i, j-1, A, B, dp) )
+        return dp[i][j]
+
+	def LongestRepeatingSubsequence(self, str):
+	    n = len(str)
+	    dp = [[-1] * n for _ in range(n)]
+	    return self.f(n-1, n-1, str, str, dp)
+```
+【评论区 - 动态规划】:
 ```py
 class Solution:
 	def LongestRepeatingSubsequence(self, str):
@@ -52,6 +64,24 @@ class Solution:
                 else:
                     dp[i][j] = max(dp[i-1][j], dp[i][j-1])
         return dp[n][n]
+```
+
+【评论区 - 动态规划优化】:
+```py
+class Solution:
+	def LongestRepeatingSubsequence(self, str):
+	    n = len(str)
+	    curr = [0] * (n+1)
+	    prev = [*curr]
+
+	    for i in range(1, n+1):
+	        for j in range(1, n+1):
+	            if str[i-1] == str[j-1] and i != j:
+	                curr[j] = 1 + prev[j-1]
+                else:
+                    curr[j] = max(prev[j], curr[j-1])
+            prev = [*curr]
+	    return prev[n]
 ```
 
 ### 感觉不要挺可惜的, 反正也就几个字符, 放着吧
