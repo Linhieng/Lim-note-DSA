@@ -34,7 +34,7 @@
 - 链表(LinkedList)
     - 反转链表(reverse)
     - 链表回文(palindrome)
-    - 链表 partition
+    - [链表 partition](https://practice.geeksforgeeks.org/problems/given-a-linked-list-of-0s-1s-and-2s-sort-it/1)
     - 链表随机复制
 - 二叉树(BinaryTree)
     - 递归遍历, 非递归遍历。 (前序、中序、后序和层序)
