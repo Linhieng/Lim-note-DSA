@@ -38,7 +38,7 @@
     - 链表随机复制
 - 二叉树(BinaryTree)
     - 递归遍历, 非递归遍历。 (前序、中序、后序和层序)
-    - 最大宽度
+    - [最大宽度](https://practice.geeksforgeeks.org/problems/right-view-of-binary-tree/1)
     - 搜索二叉树 BST(BinaryTreeSearch)
     - 完全二叉树, 满二叉树
         - 堆
