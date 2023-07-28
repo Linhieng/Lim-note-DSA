@@ -25,7 +25,7 @@
     - (随机)[快速排序(QuickSort)](https://practice.geeksforgeeks.org/problems/quick-sort/1)
         - 二项分布(two-way partition)
         - 三项分布(three-way partition)
-    - 堆排序(HeapSort)
+    - [堆排序(HeapSort)](https://practice.geeksforgeeks.org/problems/heap-sort/1)
         - heapInsert
         - heapify
     - 桶排序
@@ -44,7 +44,7 @@
         - 堆
     - 平衡二叉树
     - 递归套路解决二叉树 DP(DynamicProgramming)
-    - 最近公共祖先节点
+    - [最近公共祖先节点](https://practice.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-bst/1)
     - 后继节点
     - (递归, 非递归)序列化和反序列化(Serialize & Deserialize)
 - 前缀树
