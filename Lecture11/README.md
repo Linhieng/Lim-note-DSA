@@ -210,19 +210,40 @@ void morrisIn(Node head) {
                 cur = cur.left;
                 continue
             } else {
-                // 可以在这里打印，或者出了 if 后再打印
+                // 能到达两次的节点，在第二次到达时打印
+                print(cur.value);
                 mostRight.right = null;
             }
         } else {
             // 如果 cur 没有左孩子，说明 cur 一定是叶子节点，直接打印
-            print(cur.value);
+            print(cur.value); // 只能到达一次的节点（叶子节点），直接打印
         }
-        // 中序遍历，就是在第二次到达的时候打印
-        print(cur.value);// 写在这里，更容易看懂是在往右走之前，打印的行为。
-        // 只有当第二次到达 cur 后， cur 才会往右走。
+        // 也可以在这里打印，此时上面的两行 print 就不需要了。
         cur = cur.right;
     }
 }
+```
+
+```py
+def morrisIn(root):
+    if root is None:
+        return
+    cur = root
+    while cur is not None:
+
+        if cur.left is not None:
+            most_right = cur.left
+            while most_right.right is not None and most_right.right is not cur:
+                most_right = most_right.right
+            if most_right.right is None: # 第一次到达
+                most_right.right = cur
+                cur = cur.left
+                continue
+            # 第二次到达
+            most_right.right = None
+        print(cur.data)
+        # 当左子节点为空的时候， most_right.right = cur 保证了此时右节点是向上指的
+        cur = cur.right
 ```
 
 ### 后序遍历
