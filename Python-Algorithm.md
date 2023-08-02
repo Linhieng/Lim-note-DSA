@@ -148,6 +148,8 @@ heapreplace(iterableObj, val)
 
 ## 🍕 符号或函数
 
+- `0 <= x < LEN` py 支持这种写法！
+
 - `ord()` 函数
     - 字符转 ASCII 码
 
