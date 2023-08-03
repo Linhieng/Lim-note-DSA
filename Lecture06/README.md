@@ -394,7 +394,112 @@ Node getMinDistanceAndUnselectedNode(
 }
 ```
 
-【改进后的diikstra算法】
+#### 自己实现优先级队列
+
+【py 实现 - [来自 POTD - 230803](https://practice.geeksforgeeks.org/problems/shortest-path-in-undirected-graph/1)】：
+```py
+from typing import List
+
+class PriorityQueue:
+
+    def __init__(self):
+        self.__items = []
+        self.__size = 0
+        self.__nodes_map = {}
+
+    def empty(self):
+        return self.__size <= 0
+
+    def put(self, item):
+        if item is None or len(item) < 2:
+            raise Exception('Unaccepted item.')
+
+        weight, node = item
+        if node not in self.__nodes_map:
+            self.__insert(item)
+        else:
+            self.__update(item)
+
+    def get(self):
+        if self.empty():
+            raise Exception('Queue is empty.')
+
+        self.__swap(0, self.__size-1)
+        res = self.__items.pop()
+        self.__size -= 1
+        self.__nodes_map.pop(res[1])
+        self.__heapify(0)
+        return res
+
+    def __insert(self, item):
+        self.__size += 1
+        self.__items.append(item)
+        self.__nodes_map[item[1]] = self.__size-1
+        self.__bubble(self.__size-1)
+
+    def __update(self, item):
+        new_weight, node = item
+        i = self.__nodes_map[node]
+        old_weight = self.__items[i][0]
+        self.__items[i][0] = new_weight
+
+        if new_weight > old_weight:
+            self.__heapify(i)
+        else:
+            self.__bubble(i)
+
+    def __heapify(self, i):
+        while 2*i+1 < self.__size:
+            left = 2*i+1
+            right = left+1
+            min_child = left
+            if right < self.__size and self.__items[right][0] < self.__items[min_child][0]:
+                min_child = right
+
+            if self.__items[i][0] <= self.__items[min_child][0]:
+                break
+
+            self.__swap(i, min_child)
+            i = min_child
+
+    def __bubble(self, i):
+        parent = (i-1)//2
+        while i > 0 and self.__items[i][0] < self.__items[parent][0]:
+            self.__swap(i, parent)
+            i = parent
+            parent = (i-1)//2
+
+    def __swap(self, i, j):
+        self.__items[i], self.__items[j] = self.__items[j], self.__items[i]
+        self.__nodes_map[self.__items[i][1]] = i
+        self.__nodes_map[self.__items[j][1]] = j
+
+
+class Solution:
+    def shortestPath(self, n : int, m : int, edges : List[List[int]]) -> List[int]:
+        shorted = [-1] * n
+        pq = PriorityQueue()
+        pq.put( [0, 0] )
+
+        nexts = {i: [] for i in range(n)}
+        for fr, to, w in edges:
+            nexts[fr].append( [to, w] )
+
+        while not pq.empty():
+            src_to_w, to = pq.get()
+
+            # 自己实现优先级队列后，可以直接修改！
+            shorted[to] = src_to_w
+
+            for to_next, to_next_w in nexts[to]:
+                if shorted[to_next] == -1 or shorted[to_next] > src_to_w + to_next_w:
+                    shorted[to_next] = src_to_w + to_next_w
+                    pq.put( [shorted[to_next], to_next] )
+
+        return shorted
+```
+
+【老师代码】
 
 ```java
 // 从head出发, 所有head能到达的节点, 生成到达每个节点的最小路径记录并返回
