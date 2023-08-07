@@ -89,7 +89,7 @@ key in m
 
 ### 哈希表 set
 ```py
-# 创建
+# 创建。如果创建时初始化值，则通过 s = {v1, v2, v3, ..} 创建
 s = set()
 
 # 添加
@@ -100,6 +100,11 @@ hashableKey in s
 
 # 删除
 s.remove(hashableKey)
+
+# 弹出
+s.pop()
+# 查看长度
+len(s)
 ```
 
 ### 优先级队列
