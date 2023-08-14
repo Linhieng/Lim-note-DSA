@@ -12,6 +12,20 @@
 
 ### Python3
 
+```py
+class Solution:
+	def singleNumber(self, nums):
+	    xor = 0
+	    for n in nums:
+	        xor ^= n
+	    mostRight = xor & (~xor + 1)
+	    a = 0
+	    for n in nums:
+	        if n & mostRight == 0: # 注意这里要么是 0，要么是 mostRight
+	            a ^= n
+	    return sorted([a, a ^ xor])
+```
+
 【我+评论区 SC: O(1)】
 ```py
 class Solution:
