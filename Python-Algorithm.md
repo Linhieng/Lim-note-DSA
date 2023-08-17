@@ -1,155 +1,69 @@
-## 🍕 数据结构
+## 🍕 其他
 
-### 数组/列表
-```py
-# 创建
-arr = [0] * alen
+在做题过程中，涉及奇偶数，下标，中点时。牢记下面四种情况：
+- `n//2`
+    ```
+       偶数(n=2)      奇数(n=3)
+        0  1          0  1  2
+           ↑             ↑
+    ```
+- `n//2 - 1`
+    ```
+       偶数(n=2)      奇数(n=3)
+        0  1          0  1  2
+        ↑             ↑
+    ```
+- `(n+1)//2`
+    ```
+       偶数(n=2)      奇数(n=3)
+        0  1          0  1  2
+           ↑                ↑
+    ```
+- `(n-1)//2`
+    ```
+       偶数(n=2)      奇数(n=3)
+        0  1          0  1  2
+        ↑                ↑
+    ```
 
-# 交换元素
-arr[i], arr[j] = arr[j], arr[i]
+## 🍕 相关数据结构（对象）的方法和属性说明
 
-# 获取数组大小
-len(arr)
+- 全局函数
+    - `len(..)`
+    - `sorted(..)`
+- `list`
+    - `append(object)` 从尾部添加
+    - `insert(index, object)` 从指定位置添加
+    - `pop(index)` 弹出指定位置元素
+    - `reverse()` 反转（可用 `[::-1]` 代替）
+    - `index(val)` 找不到时会报错，想要判断是否存在，应该用 `in` 关键字
+- `{}`
+    - `pop(key)`
+    - `keys()`
+    - `values()`
+    - `get()` 不存在时会报错，想要判断是否存在，应该用 `in` 关键字
 
-```
-
-### 栈
-```py
-# 创建
-stack = []
-
-# 入栈
-stack.append(val)
-
-# 出栈
-stack.pop()
-
-# 栈大小
-len(stack)
-
-# 查看栈顶元素
-stack[-1]
-```
-
-### 队列
-```py
-# 导包
-from queue import Queue
-
-# 创建
-q = Queue()
-
-# 入队列
-q.put(val)
-
-# 出队列
-q.get()
-
-# 查看队列大小
-q.qsize()
-
-# 判断队列是否为空
-q.empty()
-```
-
-```py
-q = [1]
-
-# 入队列
-q.append(2)
-
-# 出队列
-q.pop(0)
-
-# 查看队列大小
-len(q)
-
-# 判断队列是否为空
-0 == len(q)  # 或者直接将 q 作为布尔值进行判断，如果 q 为空，布尔值就是 false
-
-```
-
-### 哈希表 map
-```py
-# 创建
-m = { }
-
-# 添加 / 修改
-m[key] = val
-
-# 删除
-m.pop(key)
-
-# 获取
-m.get(key) # 不能用于判断
-
-# 判断 / 查询
-key in m
-```
-
-### 哈希表 set
-```py
-# 创建。如果创建时初始化值，则通过 s = {v1, v2, v3, ..} 创建
-s = set()
-
-# 添加
-s.add(hashableKey) # list 无法被添加
-
-# 判断  / 查询
-hashableKey in s
-
-# 删除
-s.remove(hashableKey)
-
-# 弹出
-s.pop()
-# 查看长度
-len(s)
-```
-
-### 优先级队列
-```py
-# 导入
-from queue import PriorityQueue
-
-# 创建
-pq = PriorityQueue()
-
-# 添加
-pq.put(val)
-
-# 判断是否为空
-pq.empty()
-
-# 取出最小值元素值
-pq.get()
-
-# 传入对象时, 需要实现比较方法
-def __lt__(self, other):
-    return self.val[1] < other.val[1] # 从小到大
-```
-
-### 小根堆
-
-``` py
-# 导入
-from heapq import heapify, heappush, heappop, heappushpop, heapreplace
-
-# 原地修改可迭代对象为小根堆
-heapify(iterableObj)
-
-# 插入新元素, 确保该元素处于正确的位置
-heappush(iterableObj, val)
-
-# 弹出最小元素, 同时维持堆
-heappop(iterableObj)
-
-# 插入然后返回最小元素
-heappushpop(iterableObj, val)
-
-# 弹出最小元素然后插入
-heapreplace(iterableObj, val)
-```
+- `from queue import Queue`
+    - 完全可以用 `list` 代替
+    - `put(val)`
+    - `get()`
+    - `empty()`
+    - 不支持 `len()`
+- `from queue import PriorityQueue`
+    - `put(val)`
+    - `get()` 取出最小值
+    - `empty()`
+    - 比较对象时，需要对象有提供比较方法（`__lt__`）
+- `set`
+    - `add(ele)`
+    - `pop(ele)`
+    - `remove(ele)` 不返回
+- `import heapq`
+    - `heapify(iterableObj)` 原地修改可迭代对象为小根堆
+    - `heappush(iterableObj, val)` 插入新元素, 确保该元素处于正确的位置
+    - `heappop(iterableObj)` 弹出最小元素, 同时维持堆
+    - `heappushpop(iterableObj, val)` 插入然后返回最小元素
+    - `heapreplace(iterableObj, val)` 弹出最小元素然后插入
 
 ## 🍕 符号或函数
 
