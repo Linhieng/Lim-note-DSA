@@ -10,6 +10,29 @@
 
 ### Python3
 
+【py 改写评论区】
+```py
+class Solution:
+    def subArraySum(self,arr, n, s):
+        if s < 1:
+            return [-1]
+
+        sum, left, right = 0, 0, 0
+        while right < n:
+            sum += arr[right]
+
+            while sum > s:
+                sum -= arr[left]
+                left += 1
+
+            if sum == s:
+                return [left+1, right+1]
+
+            right += 1
+
+        return [-1]
+```
+
 【我的】
 ```py
 class Solution:
