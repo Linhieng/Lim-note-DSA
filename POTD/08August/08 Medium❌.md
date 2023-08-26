@@ -1,4 +1,4 @@
-## 230808 Fraction pairs with sum 1
+## [230808 Fraction pairs with sum 1](https://practice.geeksforgeeks.org/problems/fraction-pairs-with-sum-1/1)
 
 【题意】： 给你 N 个分数，问有多少个分数对，他们的和为 1
 
