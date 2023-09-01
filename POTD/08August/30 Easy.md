@@ -7,7 +7,71 @@
 - 时间复杂度：O(n)
 - 额外空间复杂度：O(1)
 
-## Python3
+## Solution
+
+```js
+/**
+ * @param {Node} head
+ * @return {Node}
+*/
+
+class Solution {
+    deleteNode(head,x){
+        if (!head) return null
+        if (x === 1) return head.next
+        head.next = this.deleteNode(head.next, x-1)
+        return head
+    }
+}
+```
+
+```js
+//User function Template for javascript
+
+/*LINKED LIST NODE
+class Node {
+  constructor(x){
+    this.data = x;
+    this.next = null;
+  }
+}
+*/
+
+
+/**
+ * @param {Node} head
+ * @return {Node}
+*/
+
+class Solution {
+    deleteNode(head,x){
+        if (head === null) {
+            return null
+        }
+        if (x === 1) {
+            return head.next
+        }
+
+        let prev = null
+        let cur = head
+        let idx = 0
+        while (cur) {
+            idx += 1
+
+            if (idx === x) {
+                prev.next = cur.next
+                break
+            }
+
+            prev = cur
+            cur = cur.next
+        }
+
+        return head
+
+    }
+}
+```
 
 ```py
 def delNode(head, k):

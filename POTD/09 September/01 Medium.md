@@ -5,7 +5,7 @@
 【Excepted】
 
 - Time Complexity: O(N)
-- Auxiliary Space: O(N)
+- Auxiliary Space: O(number of nodes in a level)
 
 ## Python3
 
