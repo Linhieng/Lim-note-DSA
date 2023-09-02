@@ -48,7 +48,7 @@
     - `upper()`
     - `lower()`
     - `join(Iterable[str])`
-    - `split(sep)`
+    - `split(sep)` 做算法时，不传入 sep 更好，因为这样会自动丢弃空字符串。
     - `strip()`
 - `list` 列表
     - `append(object)` 从尾部添加
