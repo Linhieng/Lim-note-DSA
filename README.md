@@ -1,16 +1,21 @@
 # 学习数据结构与算法
 
+从 230903 开始，做 POTD 时，无法在 40 分钟内 AC 的一律 ❌，禁止任何留恋。
+
 文件夹说明：
+
 - lecture 内容来自 [算法老师左神的 B 站视频](https://www.bilibili.com/video/BV13g41157hK/)。
 - POTD 内容来自 [geeksforgeeks 的 Problem Of The Day](https://practice.geeksforgeeks.org/problem-of-the-day)。确保每天更新
 - [AcWing](https://www.acwing.com/activity/1/competition/) 暂时只记录周赛题目。
 - [LeeCode](https://leetcode.cn/problemset/all/) 暂不确定。
 
 TODO：
+
 - [ ] 整理仓库。仓库现已变得臃肿了，笔记中的某些内容已经变得过于啰嗦。
 - [ ] 改写可以那些使用递归实现的算法
 
 学习技巧：
+
 - 写算法时，永远记得考虑边界问题
 - 人的优势在于使用工具。不要认为只靠想就做出一道算法题有多厉害，真正厉害的应该是能画出来，理清逻辑，并且能给别人讲明白。所以要多画图！
 
