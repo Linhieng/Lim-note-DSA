@@ -1,4 +1,8 @@
 {
+    "[markdown]": {
+        "editor.fontFamily": "Hack-ASCII, 微软雅黑",
+        "editor.fontSize": 16
+    },
     "markdownlint.config": {
         "MD007": { "indent": 4}
     },
