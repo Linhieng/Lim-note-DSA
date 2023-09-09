@@ -39,6 +39,7 @@
     - `sorted(.., key=lambda x: 0-x[0])` 降序
     - `round(..)`, `enumerate(..)`, `reversed(..)`
     - `ord(string)`, `chr(number)` 字符和 ASCII 互换
+    - `bin(num)` 将数字转换为二进制，格式是字符串
     - 没怎么用到，但感觉不错的
         - `abs(number)`
         - `bin(number)` 返回数字的二进制形式
@@ -50,17 +51,20 @@
     - `join(Iterable[str])`
     - `split(sep)` 做算法时，不传入 sep 更好，因为这样会自动丢弃空字符串。
     - `strip()`
+    - `replace(old, new)` 返回替换后的字符串
+    - `ljust(width, fillchar)`, `rjust()` 填充字符到指定长度。
 - `list` 列表
     - `append(object)` 从尾部添加
     - `insert(index, object)` 从指定位置添加
     - `pop(index)` 弹出指定位置元素
     - `reverse()` 反转（可用 `[::-1]` 代替）
     - `index(val)` 找不到时会报错，想要判断是否存在，应该用 `in` 关键字
-- `{}`
+    - `remove(val)` 删除
+- `{}` dict
     - `pop(key)`
     - `keys()`
     - `values()`
-    - `get()` 不存在时会报错，想要判断是否存在，应该用 `in` 关键字
+    - `get(key, default_value)`
 
 - `from queue import Queue`
     - 完全可以用 `list` 代替
