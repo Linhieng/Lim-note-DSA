@@ -1,4 +1,4 @@
-## [230717 - First non-repeating character in a stream](https://practice.geeksforgeeks.org/problems/first-non-repeating-character-in-a-stream1216/1)
+# [230717 - First non-repeating character in a stream](https://practice.geeksforgeeks.org/problems/first-non-repeating-character-in-a-stream1216/1)
 
 - 【题意】 第一个不重复字符
 - 【要求】
@@ -7,7 +7,8 @@
 - 【Constraints】
     - 1 ≤ N ≤ $10^5$
 - 【Example】:
-    ```
+
+    ```text
     Input: A = "aabc"
     Output: "a#bb"
     Explanation: For every character first non
@@ -25,6 +26,7 @@
 最终实现了代码,
 
 【用到的 py 基础知识】:
+
 - `ord()` 字符转 ASCII
 - `chr()` 数字转字符
 - `[*A]` 字符串转字符串数组
@@ -32,58 +34,100 @@
 - 推导式比循环快
 
 容易出错的地方:
+
 - 缩进不对
 - `=` 写成 `==`
 - 函数`()` 写成 `[]`, 最典型的错误就是 `arr.append[i]`
 - 字符串无法修改指定位置的值
 
-### Python3 代码
+## Solution
+
+```js
+/**
+ * @param {string} A
+ * @return {string}
+*/
+
+class Solution {
+  FirstNonRepeating(A){
+    let ans = ''
+    const appearOrder = new Int8Array(26)
+
+    for (const char of A) {
+        const charIndex = char.charCodeAt() - 97
+
+        if (appearOrder[charIndex] > 0) {
+            appearOrder[charIndex] = -1
+        } else if (appearOrder[charIndex] == 0) {
+            for (let i = 0; i <= 26; i++) {
+                if (appearOrder[i] > 0) {
+                    appearOrder[i]++
+                }
+            }
+            appearOrder[charIndex] = 1
+        }
+
+        let nearChar = '#'
+        let near = 0
+        for (let i = 0; i <= 26; i++) {
+            if (appearOrder[i] > near) {
+                near = appearOrder[i]
+                nearChar = String.fromCharCode(i + 97)
+            }
+        }
+        ans += nearChar
+    }
+
+    return ans
+  }
+}
+```
 
 【我的 - 只是用一个数组】:
+
 ```py
 class Solution:
-	def FirstNonRepeating(self, A):
-	    f = ''
-		a = [0] * 26
+    def FirstNonRepeating(self, A):
+        f = ''
+        a = [0] * 26
 
-		for c in A:
-		    ci = ord(c)-97
+        for c in A:
+            ci = ord(c)-97
 
-		    if a[ci] > 0: # 已经出现过 Had appeared
-		        a[ci] = -1
-	        elif a[ci] != -1: # 从未出现过 Never appeared
-	            a = [i+1 if i > a[ci] else i for i in a ] # 存储出现次序信息 Ensure the order of occurrence
-	            a[ci] += 1
+            if a[ci] > 0: # 已经出现过 Had appeared
+                a[ci] = -1
+            elif a[ci] != -1: # 从未出现过 Never appeared
+                a = [i+1 if i > a[ci] else i for i in a ] # 存储出现次序信息 Ensure the order of occurrence
+                a[ci] += 1
 
             m = max(a)
             f += '#' if m < 1 else chr(a.index(m) + 97)
 
-	    return f
+        return f
 ```
 
-【我的】
 ```py
 class Solution:
-	def FirstNonRepeating(self, A):
-		fnrc = ''
+    def FirstNonRepeating(self, A):
+        fnrc = ''
 
-		occ_table = { chr(x+ord('a')): 0 for x in range(26) }  # occ_table = [0] * 26
-		sequence = []
-		si = 0
+        occ_table = { chr(x+ord('a')): 0 for x in range(26) }  # occ_table = [0] * 26
+        sequence = []
+        si = 0
 
-		for c in A:
+        for c in A:
 
-		    occ_table[c] += 1  # occ_table[ ord(c)-ord('a') ] += 1
+            occ_table[c] += 1  # occ_table[ ord(c)-ord('a') ] += 1
             if c not in sequence:
                 sequence.append(c)
 
             while si < len(sequence) and occ_table[ sequence[si] ] > 1: # occ_table[ ord(sequence[si])-ord('a') ]
                 si += 1
 
-	        if si < len(sequence):
-	            fnrc += sequence[si]
-	        else:
-	            fnrc += '#'
+            if si < len(sequence):
+                fnrc += sequence[si]
+            else:
+                fnrc += '#'
 
-	    return fnrc
+        return fnrc
 ```
